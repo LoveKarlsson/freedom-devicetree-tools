@@ -21,7 +21,7 @@ void riscv_cpu_intc::declare_structs()
   dtb.match(
     std::regex(compat_string),
     [&](node n) {
-      os << "struct __metal_driver_riscv_cpu_intc __metal_dt_" << handle(n) << ";\n\n";
+      os << "__MD_EXTERNAL struct __metal_driver_riscv_cpu_intc __metal_dt_" << handle(n) << ";\n\n";
     });
 }
 

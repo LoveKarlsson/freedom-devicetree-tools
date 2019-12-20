@@ -30,10 +30,10 @@ void riscv_pmp::include_headers()
 void riscv_pmp::declare_structs()
 {
   if (pmp_present) {
-    os << "struct metal_pmp __metal_dt_pmp;\n\n";
+    os << "__MD_EXTERNAL struct metal_pmp __metal_dt_pmp;\n\n";
   } else if (dtb.match(std::regex("riscv,pmp"), [](const node n) {}) != 0) {
     /* This handles the old-style nodes with the riscv,pmp compat strings. */
-    os << "struct metal_pmp __metal_dt_pmp;\n\n";
+    os << "__MD_EXTERNAL struct metal_pmp __metal_dt_pmp;\n\n";
   }
 }
 

@@ -186,7 +186,11 @@ void Device::emit_inline_def(Inline* func, std::string device)
 }
 
 void Device::emit_struct_pointer_begin(std::string type, std::string name, std::string ext) {
+  os << "#ifndef __IAR_SYSTEMS_ICC__\n";
   os << "__asm__ (\".weak " << name << "\");\n";
+  os << "#else\n";
+  os << "__MD_EXTERNAL\n";
+  os << "#endif\n";
   os << "struct __metal_driver_" << type << " *" << name << ext << " = {\n";
 }
 void Device::emit_struct_pointer_element(std::string type, uint32_t id,
@@ -245,7 +249,7 @@ std::string Device::platform_define_offset(node n, std::string suffix) {
  * "__metal_" namespace */
 void Device::emit_struct_decl(std::string type, const node &n) {
   emit_comment(n);
-  os << "struct __metal_driver_" << type << " __metal_dt_" << n.handle() << ";\n\n";
+  os << "__MD_EXTERNAL struct __metal_driver_" << type << " __metal_dt_" << n.handle() << ";\n\n";
 }
 
 void Device::emit_struct_begin(std::string type, const node &n) {
@@ -345,7 +349,11 @@ void Device::emit_struct_end(void) {
 
 void Device::emit_struct_array_def_begin(std::string type, std::string name, std::string size) {
   os << "/* Custom array definition */\n";
+  os << "#ifndef __IAR_SYSTEMS_ICC__\n";
   os << "__asm__ (\".weak __metal_dt_" << name << "\");\n";
+  os << "#else\n";
+  os << "__MD_EXTERNAL\n";
+  os << "#endif\n";
   os << "struct __metal_driver_" << type << " __metal_dt_" << name << "[ ] = {\n";
 }
 

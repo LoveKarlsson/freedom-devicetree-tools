@@ -217,6 +217,17 @@ static void write_h_file(const fdt &dtb, fstream &os,
   }
   os << std::endl;
 
+  os << "#ifdef __IAR_SYSTEMS_ICC__\n";
+  os << "#ifdef __NO_IAR_WEAK__\n";
+  os << "#define __MD_EXTERNAL //\n";
+  os << "#else\n";
+  os << "#define __MD_EXTERNAL __weak extern\n";
+  os << "#endif\n";
+  os << "#else\n";
+  os << "#define __MD_EXTERNAL\n";
+  os << "#endif\n\n";
+
+
   for(auto it = devices.begin(); it != devices.end(); it++) {
     (*it)->declare_structs();
   }
@@ -233,6 +244,7 @@ static void write_h_file(const fdt &dtb, fstream &os,
 
   os << "#endif /* MACROS_ELSE_" << h_file << "*/" << std::endl << std::endl;
   os << "#endif /* ! __METAL_MACHINE_MACROS */" << std::endl << std::endl;
+  os << "#undef __MD_EXTERNAL" << std::endl << std::endl;
   os << "#endif /* ! ASSEMBLY */" << std::endl;
 }
 
@@ -250,6 +262,12 @@ static void write_i_file(const fdt &dtb, fstream &os,
 
   os << "#include <metal/machine.h>" << std::endl << std::endl;
 
+  os << "#ifdef __IAR_SYSTEMS_ICC__\n";
+  os << "#ifndef __inline__\n";
+  os << "#define __inline__ inline\n";
+  os << "#endif\n";
+  os << "#endif\n";
+
   std::list<Device *> devices;
 
   prepare_devices(dtb, os, devices);
@@ -263,6 +281,10 @@ static void write_i_file(const fdt &dtb, fstream &os,
     (*it)->define_structs();
   }
   os << std::endl;
+  os << "#ifdef __IAR_SYSTEMS_ICC__\n";
+  os << "#undef __inline__\n";
+  os << "#endif\n\n";
+
 
   os << "#endif /* " << i_file << "*/" << std::endl;
   os << "#endif /* ! ASSEMBLY */" << std::endl;

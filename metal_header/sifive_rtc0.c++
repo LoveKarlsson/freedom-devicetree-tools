@@ -200,7 +200,7 @@ void sifive_rtc0::declare_structs()
     std::regex(compat_string),
     [&](node n) {
       emit_comment(n);
-      os << "struct __metal_driver_sifive_rtc0 __metal_dt_rtc_" << n.instance() << ";\n\n";
+      os << "__MD_EXTERNAL struct __metal_driver_sifive_rtc0 __metal_dt_rtc_" << n.instance() << ";\n\n";
     }
   );
 }
